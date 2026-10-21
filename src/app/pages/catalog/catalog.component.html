@@ -1,0 +1,10 @@
+<main class="catalog">
+  <div class="intro"><div><p class="eyebrow">Our fleet</p><h1>Choose your next ride</h1></div><span>{{ carsService.totalCars() }} cars available</span></div>
+  <app-filter-bar [brands]="carsService.brands()" (filtersChanged)="applyFilters($event)" />
+  @if (carsService.error()) { <p class="error">{{ carsService.error() }}</p> }
+  @if (carsService.isLoading() && !carsService.cars().length) { <app-loader /> }
+  @else if (carsService.cars().length) {
+    <section class="grid" aria-label="Available cars">@for (car of carsService.cars(); track car.id) { <app-car-card [car]="car" /> }</section>
+    @if (carsService.page() < carsService.totalPages()) { <button class="load-more" type="button" (click)="loadMore()" [disabled]="carsService.isLoading()">{{ carsService.isLoading() ? 'Loading...' : 'Load more' }}</button> }
+  } @else { <p class="empty">No cars found. Try changing your filters.</p> }
+</main>

@@ -1,0 +1,10 @@
+<main class="details-page">
+  <a class="back" routerLink="/catalog">← Back to catalog</a>
+  @if (loading) { <app-loader /> }
+  @else if (car) {
+    <section class="details-layout">
+      <div class="visual"><img class="main-image" [src]="car.img" [alt]="car.brand + ' ' + car.model"><app-booking-form (booked)="bookingRequested()" /></div>
+      <div class="info"><h1>{{ car.brand }} <span>{{ car.model }}</span></h1><p class="id">ID: {{ car.id.slice(0, 8) }}</p><p class="location">{{ car.address }}</p><p class="mileage">Mileage: {{ car.mileage | number }} km</p><div class="price"><strong>&#36;{{ car.rentalPrice }}</strong> / day</div><p class="description">{{ car.description }}</p><h2>Rental Conditions</h2><ul>@for (condition of car.rentalConditions; track condition) {<li>{{ condition }}</li>}</ul><h2>Specifications</h2><div class="specs"><span><b>{{ car.year }}</b>Year</span><span><b>{{ car.type }}</b>Type</span><span><b>{{ car.fuelConsumption }}</b>Fuel consumption</span><span><b>{{ car.engineSize }}</b>Engine size</span></div><h2>Accessories</h2><p class="accessories">{{ car.accessories.join(' · ') }}</p></div>
+    </section>
+  } @else { <p class="empty">Car not found.</p> }
+</main>
