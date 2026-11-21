@@ -73,7 +73,7 @@ function Assistant() {
         </h1>
 
         <div className="rounded-lg bg-white shadow-md">
-          <div className="h-[480px] overflow-y-auto p-4 sm:p-6">
+          <div className="h-120 overflow-y-auto p-4 sm:p-6">
             {messages.length === 0 && (
               <p className="py-8 text-center text-gray-500">
                 Опишіть, який автомобіль вам потрібен.
