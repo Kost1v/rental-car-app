@@ -1,20 +1,5 @@
 import api from './axios'
-import type { Car } from './cars.api'
-
-export interface AssistantRecommendationResponse {
-  text: string
-  cars: Car[]
-}
-
-interface RawAssistantRecommendationResponse {
-  text?: string
-  response?: string
-  answer?: string
-  message?: string
-  cars?: Car[]
-  recommendations?: Car[]
-  items?: Car[]
-}
+import type { AssistantRecommendationResponse, RawAssistantRecommendationResponse } from '../types'
 
 export const getAssistantRecommendations = async (
   message: string,

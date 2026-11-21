@@ -1,22 +1,5 @@
 import api from './axios'
-
-export interface LoginData {
-  email: string
-  password: string
-}
-
-export interface RegisterData {
-  email: string
-  full_name: string
-  password: string
-  password_confirmation: string
-}
-
-export interface AuthResponse {
-  user: Record<string, unknown>
-  access_token: string
-  refresh_token: string
-}
+import type { AuthResponse, LoginData, RegisterData } from '../types'
 
 export const login = async (data: LoginData) => {
   const response = await api.post<AuthResponse>('/auth/login', data)

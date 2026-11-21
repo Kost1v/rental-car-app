@@ -1,85 +1,10 @@
-import { useEffect, useState } from 'react'
-import { getFavorites } from '../api/favorites.api'
-import { getCarById, type Car } from '../api/cars.api'
+import { useFavorites } from '../hooks/useFavorites'
 import CarCard from '../components/CarCard'
 import { Heart, Search } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 function Favorites() {
-  const [cars, setCars] = useState<Car[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    let isCurrentRequest = true
-
-    const loadFavorites = async () => {
-      try {
-        const favoriteCars = await getFavorites()
-
-        if (isCurrentRequest) {
-          const resolvedCars = await Promise.all(
-            favoriteCars.map(async (favorite) => {
-              const favoriteRecord = favorite as unknown as {
-                id?: number
-                car_id?: number
-                brand?: string
-                make?: string
-                model?: string
-                car?: Partial<Car> & { make?: string }
-              }
-              const carId =
-                favoriteRecord.id ??
-                favoriteRecord.car_id ??
-                favoriteRecord.car?.id
-              const brand =
-                favoriteRecord.brand ??
-                favoriteRecord.make ??
-                favoriteRecord.car?.brand ??
-                favoriteRecord.car?.make ??
-                ''
-              const model =
-                favoriteRecord.model ??
-                favoriteRecord.car?.model ??
-                ''
-
-              if (carId && brand && model) {
-                return {
-                  ...favoriteRecord.car,
-                  ...favoriteRecord,
-                  id: carId,
-                  brand,
-                  model,
-                } as Car
-              }
-
-              if (carId) {
-                return await getCarById(carId)
-              }
-
-              return null
-            }),
-          )
-
-          setCars(resolvedCars.filter((car): car is Car => car !== null))
-        }
-      } catch {
-        if (isCurrentRequest) {
-          setError('Не вдалося завантажити улюблені автомобілі.')
-        }
-      } finally {
-        if (isCurrentRequest) {
-          setLoading(false)
-        }
-      }
-    }
-
-    void loadFavorites()
-
-    return () => {
-      isCurrentRequest = false
-    }
-  }, [])
+  const { favoriteCars: cars, loading, error, updatingId, toggleFavorite } = useFavorites()
 
   return (
     <main className="min-h-screen px-4 py-10">
@@ -121,7 +46,9 @@ function Favorites() {
             {cars.map((car) => (
               <CarCard
                 car={car}
-                initialIsFavorite
+                isFavorite
+                isUpdatingFavorite={updatingId === car.id}
+                onFavoriteToggle={(selectedCar) => void toggleFavorite(selectedCar)}
                 key={car.id}
               />
             ))}

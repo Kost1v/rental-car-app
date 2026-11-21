@@ -30,11 +30,12 @@ function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 px-4 py-3 text-slate-700 shadow-sm backdrop-blur-md">
       <div className="relative mx-auto flex max-w-7xl items-center justify-between">
-      <NavLink className="flex items-center gap-2 text-lg font-extrabold tracking-tight text-slate-900" to="/cars">
+      <NavLink className="flex items-center text-lg font-extrabold tracking-tight text-slate-900" to="/cars">
         <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-200">
           <CarFront className="h-5 w-5" />
         </span>
-        Auto<span className="text-indigo-600">Rent</span>
+        <span className='ml-2'>Auto</span>
+        <span className="text-indigo-600">Rent</span>
       </NavLink>
       <button
         aria-label="Відкрити меню"
@@ -73,10 +74,10 @@ function Navbar() {
               <NavLink className="rounded-xl px-4 py-3 font-semibold hover:bg-slate-50" onClick={() => setIsOpen(false)} to="/cars">
                 Каталог
               </NavLink>
-              <NavLink onClick={() => setIsOpen(false)} to="/bookings">
+              <NavLink className="rounded-xl px-4 py-3 font-semibold hover:bg-slate-50" onClick={() => setIsOpen(false)} to="/bookings">
                 Мої бронювання
               </NavLink>
-              <NavLink onClick={() => setIsOpen(false)} to="/favorites">
+              <NavLink className="rounded-xl px-4 py-3 font-semibold hover:bg-slate-50" onClick={() => setIsOpen(false)} to="/favorites">
                 Улюблені
               </NavLink>
               <NavLink className="rounded-xl px-4 py-3 font-semibold hover:bg-slate-50" onClick={() => setIsOpen(false)} to="/assistant">

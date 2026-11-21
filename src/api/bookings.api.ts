@@ -1,19 +1,5 @@
 import api from './axios'
-
-export interface Booking {
-  id: number
-  car_id: number
-  start_date: string
-  end_date: string
-  total_price: string
-  status: string
-}
-
-export interface CreateBookingData {
-  car_id: number
-  start_date: string
-  end_date: string
-}
+import type { Booking, CreateBookingData } from '../types'
 
 export const getBookings = async () => {
   const response = await api.get<Booking[]>('/bookings')

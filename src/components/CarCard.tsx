@@ -1,28 +1,50 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
-import { Heart, Users } from 'lucide-react'
-import type { Car } from '../api/cars.api'
+import { Box, Heart, Users } from 'lucide-react'
+import type { Car } from '../types'
 import { addFavorite, removeFavorite } from '../api/favorites.api'
+import { fallbackCarImage, getCarMedia } from '../data/carMedia'
+import type { RootState } from '../store/store'
 
 interface CarCardProps {
   car: Car
   initialIsFavorite?: boolean
+  isFavorite?: boolean
+  isUpdatingFavorite?: boolean
+  onFavoriteToggle?: (car: Car) => void
 }
 
-function CarCard({ car, initialIsFavorite = false }: CarCardProps) {
-  const [isFav, setIsFav] = useState(initialIsFavorite)
-  const [isUpdatingFavorite, setIsUpdatingFavorite] = useState(false)
+function CarCard({
+  car,
+  initialIsFavorite = false,
+  isFavorite,
+  isUpdatingFavorite,
+  onFavoriteToggle,
+}: CarCardProps) {
+  const [localIsFavorite, setLocalIsFavorite] = useState(initialIsFavorite)
+  const [localIsUpdating, setLocalIsUpdating] = useState(false)
+  const accessToken = useSelector((state: RootState) => state.auth.accessToken)
+  const isAuthenticated = Boolean(accessToken)
+  const isFav = isFavorite ?? localIsFavorite
+  const favoriteIsUpdating = isUpdatingFavorite ?? localIsUpdating
   const dailyPrice = Number(car.daily_price)
   const formattedPrice = Number.isFinite(dailyPrice)
     ? new Intl.NumberFormat('uk-UA').format(dailyPrice)
     : car.daily_price
+  const { imageUrl, modelUrl } = getCarMedia(car)
 
   const handleFavoriteToggle = async () => {
+    if (onFavoriteToggle) {
+      onFavoriteToggle(car)
+      return
+    }
+
     const previousIsFavorite = isFav
     const nextIsFavorite = !previousIsFavorite
-    setIsFav(nextIsFavorite)
-    setIsUpdatingFavorite(true)
+    setLocalIsFavorite(nextIsFavorite)
+    setLocalIsUpdating(true)
 
     try {
       if (nextIsFavorite) {
@@ -33,10 +55,10 @@ function CarCard({ car, initialIsFavorite = false }: CarCardProps) {
         toast.success('Видалено з улюблених')
       }
     } catch {
-      setIsFav(previousIsFavorite)
+      setLocalIsFavorite(previousIsFavorite)
       toast.error('Не вдалося оновити улюблені')
     } finally {
-      setIsUpdatingFavorite(false)
+      setLocalIsUpdating(false)
     }
   }
 
@@ -47,23 +69,36 @@ function CarCard({ car, initialIsFavorite = false }: CarCardProps) {
           <img
             alt={`${car.brand} ${car.model}`}
             className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            src="https://placehold.co/600x400?text=Car"
+            loading="lazy"
+            onError={(event) => {
+              event.currentTarget.onerror = null
+              event.currentTarget.src = fallbackCarImage
+            }}
+            src={imageUrl}
           />
         </Link>
         <span className="absolute left-4 top-4 rounded-full border border-white/70 bg-slate-900/75 px-3 py-1 text-xs font-semibold capitalize text-white backdrop-blur-md">
           {car.category}
         </span>
-        <button
-          aria-label={isFav ? `Видалити ${car.brand} ${car.model} з улюблених` : `Додати ${car.brand} ${car.model} до улюблених`}
-          className={`absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/70 bg-white/80 shadow-sm backdrop-blur-md transition hover:scale-105 disabled:opacity-50 ${
-            isFav ? 'text-rose-500' : 'text-slate-500'
-          }`}
-          disabled={isUpdatingFavorite}
-          onClick={() => void handleFavoriteToggle()}
-          type="button"
-        >
-          <Heart className="h-5 w-5" fill={isFav ? 'currentColor' : 'none'} />
-        </button>
+        {modelUrl && (
+          <span className="absolute left-4 top-14 flex items-center gap-1 rounded-full border border-white/70 bg-indigo-600/95 px-2.5 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-md">
+            <Box className="h-3.5 w-3.5" />
+            3D
+          </span>
+        )}
+        {isAuthenticated && (
+          <button
+            aria-label={isFav ? `Видалити ${car.brand} ${car.model} з улюблених` : `Додати ${car.brand} ${car.model} до улюблених`}
+            className={`cursor-pointer absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/70 bg-white/80 shadow-sm backdrop-blur-md transition hover:scale-105 disabled:opacity-50 ${
+              isFav ? 'text-rose-500' : 'text-slate-500'
+            }`}
+            disabled={favoriteIsUpdating}
+            onClick={() => void handleFavoriteToggle()}
+            type="button"
+          >
+            <Heart className="h-5 w-5" fill={isFav ? 'currentColor' : 'none'} />
+          </button>
+        )}
       </div>
       <div className="p-5">
         <div className="flex items-start justify-between gap-3">

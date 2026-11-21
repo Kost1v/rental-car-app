@@ -1,34 +1,5 @@
 import api from './axios'
-
-export interface Car {
-  id: number
-  brand: string
-  model: string
-  year: number
-  category: string
-  transmission: string
-  fuel_type: string
-  seats: number
-  daily_price: string
-  currency: string
-  description: string
-}
-
-export interface GetCarsResponse {
-  items: Car[]
-  total: number
-  page: number
-  page_size: number
-}
-
-export interface GetCarsParams {
-  category?: string | null
-  sort?: string | null
-  min_price?: string | number | null
-  max_price?: string | number | null
-  page?: string | number | null
-  page_size?: string | number | null
-}
+import type { Car, GetCarsParams, GetCarsResponse } from '../types'
 
 export const getCars = async (params: GetCarsParams) => {
   const filteredParams = Object.entries(params).reduce<

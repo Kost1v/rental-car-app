@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
 import { LockKeyhole, X } from 'lucide-react'
+import Modal from './Modal'
 
 interface AuthRequiredModalProps {
   isOpen: boolean
@@ -12,38 +12,8 @@ function AuthRequiredModal({
   onClose,
   onLogin,
 }: AuthRequiredModalProps) {
-  useEffect(() => {
-    if (!isOpen) {
-      return
-    }
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose()
-      }
-    }
-
-    document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
-  }, [isOpen, onClose])
-
-  if (!isOpen) {
-    return null
-  }
-
   return (
-    <div
-      aria-labelledby="auth-required-title"
-      aria-modal="true"
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) {
-          onClose()
-        }
-      }}
-      role="dialog"
-    >
-      <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl sm:p-8">
+    <Modal ariaLabelledBy="auth-required-title" isOpen={isOpen} onClose={onClose}>
         <button
           aria-label="Закрити"
           className="absolute right-4 top-4 rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
@@ -85,9 +55,8 @@ function AuthRequiredModal({
           >
             Скасувати
           </button>
-        </div>
-      </div>
-    </div>
+          </div>
+      </Modal>
   )
 }
 

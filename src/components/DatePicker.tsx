@@ -76,12 +76,6 @@ function DatePicker({
     }
   }, [isOpen])
 
-  useEffect(() => {
-    if (value) {
-      setVisibleMonth(parseDate(value))
-    }
-  }, [value])
-
   const year = visibleMonth.getFullYear()
   const month = visibleMonth.getMonth()
   const firstDay = new Date(year, month, 1)
@@ -119,7 +113,7 @@ function DatePicker({
       {isOpen && (
         <div
           aria-label={label}
-          className="absolute z-30 mt-2 w-full min-w-[280px] rounded-2xl border border-slate-200 bg-white p-4 shadow-xl"
+          className="absolute z-30 mt-2 w-full min-w-70 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl"
           role="dialog"
         >
           <div className="mb-3 flex items-center justify-between">
