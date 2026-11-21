@@ -1,6 +1,7 @@
 import { isAxiosError } from 'axios'
 import { type FormEvent, useState } from 'react'
 import toast from 'react-hot-toast'
+import { Bot, Send, Sparkles, UserRound } from 'lucide-react'
 import { getAssistantRecommendations } from '../api/assistant.api'
 import type { Car } from '../api/cars.api'
 import CarCard from '../components/CarCard'
@@ -66,18 +67,27 @@ function Assistant() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 px-4 py-8">
+    <main className="min-h-screen px-4 py-8 sm:py-10">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-6 text-3xl font-bold text-gray-900">
-          AI-асистент
-        </h1>
-
-        <div className="rounded-lg bg-white shadow-md">
-          <div className="h-120 overflow-y-auto p-4 sm:p-6">
+        <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-xl shadow-slate-200/40">
+          <header className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 sm:px-6">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-200">
+              <Sparkles className="h-5 w-5" />
+            </span>
+            <div>
+              <h1 className="font-extrabold text-slate-900">AI-асистент AutoRent</h1>
+              <p className="text-xs text-slate-500">Допоможе підібрати авто під вашу подорож</p>
+            </div>
+          </header>
+          <div className="h-130 overflow-y-auto p-4 sm:p-6">
             {messages.length === 0 && (
-              <p className="py-8 text-center text-gray-500">
-                Опишіть, який автомобіль вам потрібен.
-              </p>
+              <div className="mx-auto max-w-md py-16 text-center">
+                <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+                  <Bot className="h-7 w-7" />
+                </span>
+                <h2 className="mt-5 text-xl font-extrabold text-slate-900">Куди плануєте поїздку?</h2>
+                <p className="mt-2 text-sm text-slate-500">Опишіть місто, бюджет або побажання до автомобіля.</p>
+              </div>
             )}
 
             {messages.map((chatMessage, index) => (
@@ -87,11 +97,19 @@ function Assistant() {
                 }`}
                 key={`${chatMessage.role}-${index}`}
               >
+                <div className={`mb-2 flex items-center gap-2 ${chatMessage.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  {chatMessage.role === 'assistant' && (
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-indigo-600"><Bot className="h-4 w-4" /></span>
+                  )}
+                  {chatMessage.role === 'user' && (
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-white"><UserRound className="h-4 w-4" /></span>
+                  )}
+                </div>
                 <div
-                  className={`inline-block max-w-[85%] rounded-lg px-4 py-3 text-left ${
+                  className={`inline-block max-w-[85%] rounded-2xl px-4 py-3 text-left shadow-sm ${
                     chatMessage.role === 'user'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-900'
+                      ? 'rounded-br-md bg-slate-900 text-white'
+                      : 'rounded-bl-md border border-slate-100 bg-slate-50 text-slate-900'
                   }`}
                 >
                   {chatMessage.text}
@@ -110,15 +128,25 @@ function Assistant() {
             ))}
 
             {isLoading && (
-              <p className="text-gray-600">Асистент підбирає авто...</p>
+              <div className="flex items-center gap-3 text-sm text-slate-500">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+                  <Bot className="h-4 w-4" />
+                </span>
+                <span>Асистент підбирає авто</span>
+                <span className="flex gap-1">
+                  {[0, 1, 2].map((dot) => (
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500" key={dot} style={{ animationDelay: `${dot * 120}ms` }} />
+                  ))}
+                </span>
+              </div>
             )}
           </div>
 
-          <div className="border-t p-4">
+          <div className="border-t border-slate-100 bg-slate-50/60 p-4 sm:p-5">
             <div className="mb-4 flex flex-wrap gap-2">
               {quickPrompts.map((prompt) => (
                 <button
-                  className="rounded-full border border-blue-300 px-3 py-2 text-sm text-blue-700 hover:bg-blue-50 disabled:opacity-50"
+                  className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:text-indigo-600 hover:shadow-md disabled:opacity-50"
                   disabled={isLoading}
                   key={prompt}
                   onClick={() => void sendMessage(prompt)}
@@ -129,20 +157,20 @@ function Assistant() {
               ))}
             </div>
 
-            <form className="flex gap-3" onSubmit={handleSubmit}>
+            <form className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-lg shadow-slate-200/50" onSubmit={handleSubmit}>
               <input
-                className="min-w-0 flex-1 rounded border p-3"
+                className="min-w-0 flex-1 border-0 bg-transparent px-3 py-2 outline-none placeholder:text-slate-400"
                 disabled={isLoading}
                 onChange={(event) => setMessage(event.target.value)}
                 placeholder="Опишіть, який автомобіль вам потрібен"
                 value={message}
               />
               <button
-                className="rounded bg-blue-600 px-5 py-3 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-200 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={isLoading || message.trim().length === 0}
                 type="submit"
               >
-                Надіслати
+                <Send className="h-4 w-4" />
               </button>
             </form>
           </div>

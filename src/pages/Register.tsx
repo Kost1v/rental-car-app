@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import toast from 'react-hot-toast'
+import { Eye, EyeOff, LockKeyhole, Mail, UserRound } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { authApi } from '../api/auth.api'
@@ -27,6 +28,8 @@ function Register() {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const [submitError, setSubmitError] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
   const {
     register,
     handleSubmit,
@@ -60,12 +63,12 @@ function Register() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
+    <div className="flex min-h-[calc(100vh-140px)] items-center justify-center bg-gradient-to-br from-slate-50 via-indigo-50/50 to-sky-50 p-4">
       <form
-        className="w-full max-w-md rounded-lg bg-white p-8 shadow-md"
+        className="w-full max-w-md rounded-3xl border border-slate-100 bg-white p-6 shadow-xl shadow-slate-200/60 sm:p-8"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h1 className="mb-6 text-2xl font-bold text-gray-900">
+        <h1 className="mb-7 text-3xl font-extrabold text-slate-900">
           Реєстрація
         </h1>
 
@@ -77,12 +80,15 @@ function Register() {
 
         <label className="mb-4 block text-gray-700" htmlFor="full-name">
           Повне ім&apos;я
-          <input
-            className="mt-1 w-full rounded border p-2"
-            id="full-name"
-            type="text"
-            {...register('full_name')}
-          />
+          <span className="relative mt-2 block">
+            <UserRound className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-3 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              id="full-name"
+              type="text"
+              {...register('full_name')}
+            />
+          </span>
           {errors.full_name && (
             <span className="mt-1 block text-sm text-red-600">
               {errors.full_name.message}
@@ -92,12 +98,15 @@ function Register() {
 
         <label className="mb-4 block text-gray-700" htmlFor="register-email">
           Email
-          <input
-            className="mt-1 w-full rounded border p-2"
-            id="register-email"
-            type="email"
-            {...register('email')}
-          />
+          <span className="relative mt-2 block">
+            <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-3 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              id="register-email"
+              type="email"
+              {...register('email')}
+            />
+          </span>
           {errors.email && (
             <span className="mt-1 block text-sm text-red-600">
               {errors.email.message}
@@ -110,12 +119,23 @@ function Register() {
           htmlFor="register-password"
         >
           Пароль
-          <input
-            className="mt-1 w-full rounded border p-2"
-            id="register-password"
-            type="password"
-            {...register('password')}
-          />
+          <span className="relative mt-2 block">
+            <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-10 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              id="register-password"
+              type={showPassword ? 'text' : 'password'}
+              {...register('password')}
+            />
+            <button
+              aria-label={showPassword ? 'Сховати пароль' : 'Показати пароль'}
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-slate-400 transition hover:text-indigo-600"
+              onClick={() => setShowPassword((visible) => !visible)}
+              type="button"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </span>
           {errors.password && (
             <span className="mt-1 block text-sm text-red-600">
               {errors.password.message}
@@ -128,12 +148,23 @@ function Register() {
           htmlFor="password-confirmation"
         >
           Підтвердження пароля
-          <input
-            className="mt-1 w-full rounded border p-2"
-            id="password-confirmation"
-            type="password"
-            {...register('password_confirmation')}
-          />
+          <span className="relative mt-2 block">
+            <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-10 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              id="password-confirmation"
+              type={showPasswordConfirmation ? 'text' : 'password'}
+              {...register('password_confirmation')}
+            />
+            <button
+              aria-label={showPasswordConfirmation ? 'Сховати підтвердження пароля' : 'Показати підтвердження пароля'}
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-slate-400 transition hover:text-indigo-600"
+              onClick={() => setShowPasswordConfirmation((visible) => !visible)}
+              type="button"
+            >
+              {showPasswordConfirmation ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </span>
           {errors.password_confirmation && (
             <span className="mt-1 block text-sm text-red-600">
               {errors.password_confirmation.message}
@@ -142,7 +173,7 @@ function Register() {
         </label>
 
         <button
-          className="w-full rounded bg-blue-600 p-2 text-white hover:bg-blue-700 disabled:opacity-50"
+          className="w-full rounded-xl bg-indigo-600 p-3 font-semibold text-white shadow-md shadow-indigo-100 transition hover:bg-indigo-700 disabled:opacity-50"
           disabled={isSubmitting}
           type="submit"
         >

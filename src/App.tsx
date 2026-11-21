@@ -1,5 +1,4 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
 import Layout from './components/Layout'
 import PublicRoute from './components/PublicRoute'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -17,9 +16,7 @@ function App() {
       <Routes>
         <Route
           element={
-            <Layout>
-              <Toaster position="top-right" />
-            </Layout>
+            <Layout />
           }
         >
           <Route path="/" element={<Navigate to="/cars" replace />} />

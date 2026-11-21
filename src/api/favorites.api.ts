@@ -1,8 +1,17 @@
 import api from './axios'
 import type { Car } from './cars.api'
 
+export interface FavoriteRecord {
+  id?: number
+  car_id?: number
+  brand?: string
+  make?: string
+  model?: string
+  car?: Partial<Car> & { make?: string }
+}
+
 export const getFavorites = async () => {
-  const response = await api.get<Car[]>('/favorites')
+  const response = await api.get<FavoriteRecord[] | Car[]>('/favorites')
   return response.data
 }
 
