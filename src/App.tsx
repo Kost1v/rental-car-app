@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import Layout from './components/Layout'
 import PublicRoute from './components/PublicRoute'
@@ -13,7 +13,7 @@ import Register from './pages/Register'
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route
           element={
@@ -35,8 +35,9 @@ function App() {
             <Route path="/assistant" element={<Assistant />} />
           </Route>
         </Route>
+        <Route path="*" element={<Navigate to="/cars" replace />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
